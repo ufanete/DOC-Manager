@@ -1,0 +1,252 @@
+h1 {
+  margin-top: 0px !important;
+}
+
+body::-webkit-scrollbar, body *::-webkit-scrollbar {
+    width: 0px;
+}
+
+body::-webkit-scrollbar-track, body *::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+}
+
+body::-webkit-scrollbar-thumb, body *::-webkit-scrollbar-thumb {
+  background-color: darkgrey;
+  outline: 1px solid slategrey;
+}
+
+body{
+    background-color: /*rgb(208, 208, 208);*/rgb(213, 230, 223);/* rgba(191, 192, 193, 0.9);*/
+    padding:0px 0px 50px 0px;
+    margin:0px 0px 0px 0px;
+    overflow:hidden;
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+    font-size: 14px;
+    line-height: 1.42857143;
+    color: #333;
+    background-color: #fff;
+}
+
+.docs-sidenav {
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+/*
+@media (min-width: 768px)
+.docs-sidebar.affix .docs-sidenav, .docs-sidebar.affix-bottom .docs-sidenav {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+@media (min-width: 768px)
+.docs-sidebar.affix .docs-sidenav, .docs-sidebar.affix-bottom .docs-sidenav {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+//992
+@media (min-width: 768px)
+.docs-sidebar .nav>.active>ul {
+  display: block;
+}
+
+@media (min-width: 768px)
+.back-to-top, .docs-theme-toggle {
+  display: block;
+}
+*/
+.docs-sidenav {
+  margin-top: 0px;
+  margin-bottom: 20px;
+}
+.nav {
+  padding-left: 0;
+  margin-bottom: 0;
+  list-style: none;
+}
+
+.nav>li {
+  position: relative;
+  display: block;
+  border-bottom: 1px solid #fff;
+}
+
+.docs-sidebar .nav>.active:focus>a, .docs-sidebar .nav>.active:hover>a, .docs-sidebar .nav>.active>a {
+  padding-left: 18px;
+  font-weight: 700;
+  color: #563d7c;
+  background-color: transparent;
+  border-left: 2px solid #563d7c;
+}
+
+.nav>li>a {
+  color: #767676;
+}
+
+.nav>li>a:focus, .nav>li>a:hover {
+  color: #563d7c;
+  text-decoration: none;
+  background-color: transparent;
+}
+
+.docs-header {
+  background-color: transparent;
+}
+
+.docs-sidebar .nav>li {
+  padding: 10px;
+}
+
+.docs-sidebar .nav>li>a {
+  display: block;
+  padding: 4px 20px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #767676;
+}
+
+.docs-sidebar .nav .nav {
+  display: none;
+  padding-bottom: 10px;
+}
+
+.nav {
+  padding-left: 0;
+  margin-bottom: 0;
+  list-style: none;
+}
+ol ol, ol ul, ul ol, ul ul {
+  margin-bottom: 0;
+}
+
+.docs-sidebar .nav>li>a:focus, .docs-sidebar .nav>li>a:hover {
+  padding-left: 19px;
+  color: #563d7c;
+  text-decoration: none;
+  background-color: transparent;
+  border-left: 1px solid #563d7c;
+}
+
+.back-to-top, .docs-theme-toggle {
+  display: none;
+  padding: 4px 10px;
+  margin-top: 10px;
+  margin-left: 10px;
+  font-size: 12px;
+  font-weight: 500;
+  color: #999;
+}
+
+.docs-sidebar{
+  width:100%;
+  height:95%;
+  overflow: scroll;
+  margin-top: 5px;
+  /*box-shadow: 10px 10px;*/
+  /*border-right: 1px solid #696969;*/
+}
+
+.docs-main-container {
+  margin-top: 5px;
+}
+
+.docs-content-container {
+  background-color: white;
+  /*border-left: 1px solid #696969;*/
+}
+
+.docs-sidebar-container, .docs-content-container {
+  height: 100%;
+  overflow : hidden;
+  /*hide scroll bar*/
+}
+
+.navbar {
+  margin-bottom: 0px;
+}
+
+.doc-page-title {
+  position: initial;
+  top: 15px;
+  left: 15px;
+  font-size: 12px;
+  font-weight: 700;
+  color: #959595;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.container {
+  padding: 0px;
+  margin: 0px auto;
+  width: 100%;
+}
+
+.row>.col-md-3 {
+  background-color: transparent;
+  padding: 0px 0px 0px 3px;
+}
+
+.row{
+  margin:0px;
+}
+
+.navbar-toggle .icon-bar {
+    display: block;
+    width: 22px;
+    height: 2px;
+    border-radius: 1px;
+}
+
+.navbar-toggle {
+    position: relative;
+    float: right;
+    padding: 9px 10px;
+    margin-top: 8px;
+    margin-right: 15px;
+    margin-bottom: 8px;
+    background-color: transparent;
+    background-image: none;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    border-color: #ddd;
+  }
+
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0,0,0,0);
+    border: 0;
+}
+
+.icon-bar {
+    background-color: #888;
+}
+
+.doc-main-row {
+  height:100%;
+  overflow:scroll;
+}
+
+.fixed {
+  position: fixed !important;
+  margin-bottom: 5px;
+}
+
+.docs-label-medium {
+  font-size: 0.4em;
+  vertical-align: middle;
+}
+
+.docs-page-entries {
+  margin-top: 5px;
+}
+
+.docs-page-entries * {
+  font-size: 1.0em;
+}
+/*BS*/

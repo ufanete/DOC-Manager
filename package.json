@@ -1,0 +1,27 @@
+{
+  "name": "doc-manager",
+  "version": "1.0.0",
+  "description": "Personal Magaement Tool, Create workspaces and work flow documentation",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "insert here"
+  },
+  "keywords": [
+    "manager",
+    "free",
+    "accounting",
+    "finance",
+    "personal",
+    "buisness"
+  ],
+  "author": "Jerry Oku",
+  "license": "ISC",
+  "devDependencies": {
+    "electron": "^26.0.0"
+  }
+}
