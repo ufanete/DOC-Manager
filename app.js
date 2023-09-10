@@ -25,16 +25,21 @@ module.exports.AppController = class AppController {
   }
 
   getPage(pageID) {
-    var pageToLoad = this.db.queryDB("SELECT * FROM Page WHERE pageID = :pid LIMIT 1;", { ':pid': pageID })[0];
-    pageToLoad.pageDetails = this.db.queryDB("SELECT * FROM PageDetails WHERE pageID =:idval;", { ':idval': pageID });
+    console.log(pageID);
+    var pageToLoad = this.db.queryDB(`SELECT * FROM Page WHERE pageID = ${pageID} LIMIT 1;`);
+    console.log(pageToLoad);
+    //, { ':pid': pageID });
+    pageToLoad.pageDetails = this.db.queryDB(`SELECT * FROM PageDetails WHERE pageID =${pageID};`);
+    
+    console.log(pageToLoad);
+    //, { ':idval': pageID });
     return pageToLoad;
   }
 
   loadPage(pageID) {
     var pageToLoad = this.getPage(pageID);
-    var pageHTML = this.loadPageHTML(pageToLoad);
-
-    this.selectedPage= pageToLoad;
+    this.loadPageHTML(pageToLoad);
+    this.selectedPage = pageToLoad;
     return true;
   }
   reload() {
@@ -57,7 +62,7 @@ module.exports.AppController = class AppController {
       query += "rowIndex = " + rowIndex + ";";
     }
 
-    db.exec(query);
+    this.dbexec(query);
     this.saveDB();
     return true;
   }
@@ -68,7 +73,7 @@ module.exports.AppController = class AppController {
     var query = "";
 
     if (!isEdit) {
-      rowIndex = db.queryDB("SELECT MAX(rowIndex) AS maxIndex FROM PageEntries", {})[0]['maxIndex'];
+      rowIndex = this.dbqueryDB("SELECT MAX(rowIndex) AS maxIndex FROM PageEntries", {})[0]['maxIndex'];
       rowIndex = rowIndex == null ? 1 : rowIndex + 1;
     }
 
@@ -80,19 +85,19 @@ module.exports.AppController = class AppController {
         query += pageDetail.pageID + ",";
         query += pageDetail.columnIndex + ",";
         query += rowIndex + ",";
-        query += "'" + $('#column_' + pageDetail.columnIndex).val() + "');";
+        query += "'" + window.$('#column_' + pageDetail.columnIndex).val() + "');";
 
       } else {
 
         query += "UPDATE PageEntries SET value =";
-        query += " '" + $('#column_' + pageDetail.columnIndex).val() + "'";
+        query += " '" + window.$('#column_' + pageDetail.columnIndex).val() + "'";
         query += " WHERE pageID = " + pageDetail.pageID;
         query += " AND columnIndex = " + pageDetail.columnIndex;
         query += " AND rowIndex = " + rowIndex + ";";
 
       }
       // check if column value is empty
-      emptyEntry &= /^\s*$/.test($('#column_' + pageDetail.columnIndex).val());
+      emptyEntry &= /^\s*$/.test(window.$('#column_' + pageDetail.columnIndex).val());
     }
 
     // if at least one column entry, save and reload page
@@ -103,35 +108,39 @@ module.exports.AppController = class AppController {
   }
 
   loadPageHTML(pageToLoad) {
-    debugger;
-    $('.docs-content-container').html(this.getPageHTML(pageToLoad));
-    $('#' + this.ADD_EDIT_DIV).on('hide.bs.modal', function (event) {
-      $(this).find('.modal-body [id^=column_]').val('');
+    console.log("load page here")
+    setHtml('docs-content-container', this.getPageHTML(pageToLoad))
+    
+
+    window.$('#' + this.ADD_EDIT_DIV).on('hide.bs.modal', function (event) {
+      window.$(this).find('.modal-body [id^=column_]').val('');
     });
+
     var selectedPage = this.selectedPage;
-    $('#' + ADD_EDIT_DIV).on('show.bs.modal', function (event) {
+    var controller = this;
+    window.$('#' + this.ADD_EDIT_DIV).on('show.bs.modal', function (event) {
       // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
       // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
-      var modal = $(this);
-      var button = $(event.relatedTarget); // Button that triggered the modal
+      var modal = window.$(this);
+      var button = window.$(event.relatedTarget); // Button that triggered the modal
       //console.log(modal);
       console.log(button.data());
       var rowIndex = button.data('rowindex'); // Extract info from data-* attributes
       var isEdit = rowIndex && rowIndex >= 0;
 
       if (isEdit) {
-        var row = this.getPageEntriesByRow(selectedPage.pageID, rowIndex);
+        var row = controller.getPageEntriesByRow(selectedPage.pageID, rowIndex);
 
         for (var columnIndex in row) {
           modal.find('.modal-body #column_' + columnIndex).val(row[columnIndex].value);
         }
-        $('#' + ARCHIVE_BUTTON).removeClass('hidden');
-        $('#' + ARCHIVE_BUTTON).click(function () { this.archivePageEntry(rowIndex); });
-        $('#' + ADD_EDIT_SAVE_BUTTON).click(function () { this.saveNewPageEntry(rowIndex); });
+        window.$('#' + controller.ARCHIVE_BUTTON).removeClass('hidden');
+        window.$('#' + controller.ARCHIVE_BUTTON).click(function () { controller.archivePageEntry(rowIndex); });
+        window.$('#' + controller.ADD_EDIT_SAVE_BUTTON).click(function () { controller.saveNewPageEntry(rowIndex); });
       } else {
-        $('#' + ARCHIVE_BUTTON).addClass('hidden');
-        $('#' + ARCHIVE_BUTTON).click(function () { void (0); });
-        $('#' + ADD_EDIT_SAVE_BUTTON).click(function () { this.saveNewPageEntry(); });
+        window.$('#' + controller.ARCHIVE_BUTTON).addClass('hidden');
+        window.$('#' + controller.ARCHIVE_BUTTON).click(function () { void (0); });
+        window.$('#' + controller.ADD_EDIT_SAVE_BUTTON).click(function () { controller.saveNewPageEntry(); });
       }
 
 
@@ -162,19 +171,19 @@ module.exports.AppController = class AppController {
     pageHTML += '</h2>';
     */
     // add new entry button
-    pageHTML += getAddNewButton(pageToLoad.pageDetails);
+    pageHTML += this.getAddNewButton(pageToLoad.pageDetails);
     //pageHTML += '<p>Use contextual classes to color table rows or individual cells.</p>';
     pageHTML += '<div class="table-responsive docs-page-entries">';
 
     // add page data
-    pageHTML += getPageContentHTML(pageToLoad);
+    pageHTML += this.getPageContentHTML(pageToLoad);
     pageHTML += '</div>';
     pageHTML += '</div>';
     return pageHTML;
   }
 
   getAddNewButton(pageDetails) {
-    var button = '<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#' + ADD_EDIT_DIV + '" style="width:100%">';
+    var button = '<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#' + this.ADD_EDIT_DIV + '" style="width:100%">';
     button += 'New entry</button>';
     button += '<div class="modal fade" id="' + this.ADD_EDIT_DIV + '" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">';
     button += '<div class="modal-dialog" role="document">';
@@ -184,12 +193,12 @@ module.exports.AppController = class AppController {
     button += '<h4 class="modal-title" id="myModalLabel">Add new entry</h4>';
     button += '</div>';
     button += '<div class="modal-body">';
-    button += getAddNewEntry(pageDetails);
+    button += this.getAddNewEntry(pageDetails);
     button += '</div>';
     button += '<div class="modal-footer">';
     button += '<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>';
-    button += '<button type="button" class="btn btn-primary" id="' +  this.ADD_EDIT_SAVE_BUTTON + '" >Save changes</button>';
-    button += '<button type="button" class="btn btn-danger hidden" id="' +  this.ARCHIVE_BUTTON + '" >Archive</button>';
+    button += '<button type="button" class="btn btn-primary" id="' + this.ADD_EDIT_SAVE_BUTTON + '" >Save changes</button>';
+    button += '<button type="button" class="btn btn-danger hidden" id="' + this.ARCHIVE_BUTTON + '" >Archive</button>';
     button += '</div>';
     button += '</div>';
     button += '</div>';
@@ -198,8 +207,9 @@ module.exports.AppController = class AppController {
   }
 
   getAddNewEntry(pageDetails) {
+    console.log(pageDetails)
     var html = '<form> ';
-    for (var i = 0; i < pageDetails.length; i++) {
+    for (var i = 0; pageDetails && i < pageDetails.length; i++) {
       var pageDetail = pageDetails[i];
       var inputId = 'column_' + pageDetail.columnIndex;
       html += '<div class="form-group"> ';
@@ -241,7 +251,7 @@ module.exports.AppController = class AppController {
       html += '<tbody>';
 
       for (var rowIndex in pageEntries) {
-        html += addRowEntry(pageEntries[rowIndex], rowIndex);
+        html += this.addRowEntry(pageEntries[rowIndex], rowIndex);
       }
       html += '</tbody>';
     }
@@ -257,11 +267,11 @@ module.exports.AppController = class AppController {
     var columnMap = {};
     var isSingleRow = (rowIndex && rowIndex >= 0);
     if (isSingleRow) {
-      pageEntries = db.queryDB("SELECT * FROM PageEntries WHERE pageID =:idval AND rowIndex=:ridxval;", { ':idval': pageID, ':ridxval': rowIndex });
+      pageEntries = this.db.queryDB("SELECT * FROM PageEntries WHERE pageID =:idval AND rowIndex=:ridxval;", { ':idval': pageID, ':ridxval': rowIndex });
     }
 
     else {
-      pageEntries = db.queryDB("SELECT * FROM PageEntries WHERE pageID =:idval;", { ':idval': pageID });
+      pageEntries = this.db.queryDB("SELECT * FROM PageEntries WHERE pageID =:idval;", { ':idval': pageID });
     }
 
     for (var i = 0; i < pageEntries.length; i++) {
@@ -279,7 +289,7 @@ module.exports.AppController = class AppController {
 
   // remove rowindex param ?? causes valnurabilities
   addRowEntry(row, rowIndex) {
-    var html = '<tr data-toggle="modal" data-target="#' +  this.ADD_EDIT_DIV + '" data-rowindex="' + rowIndex + '">';
+    var html = '<tr data-toggle="modal" data-target="#' + this.ADD_EDIT_DIV + '" data-rowindex="' + rowIndex + '">';
 
     for (var columnIndex in row) {
       html += '<td>' + row[columnIndex].value + '</td>';
@@ -290,8 +300,9 @@ module.exports.AppController = class AppController {
   }
 
   saveDB() {
-    db.saveDB();
-    reload();
+    this.db.saveDB();
+    this.reload();
   }
 
 } // end AppController
+

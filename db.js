@@ -80,7 +80,7 @@ module.exports.DB = class DB {
   * Returns false if db.run returns a null Database object
   */
   initDB() {
-    logdb("Initializing the DB from default schema files");
+    this.logdb("Initializing the DB from default schema files");
     // run schema script
     // run returns Database object
     return this.db.run(this.getFile(this.SCHEMA_PATH).toString()) != null;
@@ -91,9 +91,9 @@ module.exports.DB = class DB {
     this.fs.writeFileSync(this.DB_PATH, data)
   }
 
-  queryDB(query, params, db) {
-    db = db || this.db;
-    var stmt = db.prepare(query);
+  queryDB(query, params) {
+    //db = db || this.db;
+    var stmt = this.db.prepare(query);
     var results = [];
     try {
       stmt.bind(params);
@@ -102,7 +102,7 @@ module.exports.DB = class DB {
       }
     } catch (e) {
       results = [];
-      logdb(e);
+      this.logdb(e);
     } finally {
       stmt.free();
     }
@@ -110,7 +110,7 @@ module.exports.DB = class DB {
   }
 
   logdb(msg) {
-    console.log(msg);
+    console.error(msg);
   }
 
 }

@@ -3,6 +3,7 @@
 const { app, BrowserWindow, ipcMain } = require('electron')
 const path = require('path')
 var fs = require('fs');
+const jQuery = require('jquery');
 //var sql = ;//require('sql.js');
 const { AppController } = require(path.join(__dirname, '/app.js'))
 const { SQL } = require(path.join(__dirname, '/sql.js'))
@@ -40,7 +41,7 @@ function createWindow() {
     });
 
 }
-let aa = new AppController(
+let appController = new AppController(
     new DB(
         {
             DB_PATH: DB_PATH,
@@ -57,11 +58,17 @@ app.whenReady().then(() => {
     ipcMain.handle('ping', () => 'pong')
     ipcMain.handle('pong', () => 'pong')
     
-    ipcMain.handle('selectedPage', () => aa.selectedPage())
-    ipcMain.handle('pages', () => aa.pages())
-    ipcMain.handle('organisation', () => aa.organisation())
-    ipcMain.handle('loadPage', () => aa.loadPage())
+    ipcMain.handle('selectedPage', () => appController.selectedPage())
+    ipcMain.handle('pages', () => appController.pages())
+    ipcMain.handle('organisation', () => appController.organisation())
+    ipcMain.handle('getPage', (pageId) => {
+        appController.getPage(pageId)
+    })
+    ipcMain.handle('getPageHTML', (page) => {
+        appController.getPageHTML(page)
+    })
 
+    
     createWindow()
 
     // On macOS it's common to re-create a window in the app when the
